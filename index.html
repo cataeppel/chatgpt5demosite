@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eppel construct — Structural design in Romania</title>
+  <meta name="description" content="Design for reinforced concrete and steel structures. Drafting and BIM-ready deliverables. Romania.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2216%22 fill=%22%23a855f7%22/><path d=%22M20 65L45 30l10 15 25-10-25 35-10-15-15 15z%22 fill=%22%23fff%22/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .grad { background-image: linear-gradient(90deg, #7c3aed, #d946ef); }
+    .chip { @apply inline-flex items-center text-xs font-medium rounded-full px-2 py-1 text-white; }
+    .card { @apply rounded-2xl border bg-white shadow-sm; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-slate-900">
+  <!-- Navbar -->
+  <header class="sticky top-0 z-50 border-b bg-white/70 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="h-6 w-6 rounded-md grad"></div>
+        <span class="font-bold tracking-tight lowercase">eppel construct</span>
+        <span class="ml-2 text-xs px-2 py-1 rounded-full border">RO</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-2" id="nav-desktop"></nav>
+      <button class="md:hidden p-2" onclick="toggleMenu()" aria-label="Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="nav-mobile" class="md:hidden hidden px-4 pb-4 grid grid-cols-2 gap-2"></div>
+  </header>
+
+  <!-- Pages -->
+  <main id="app" class="space-y-10"></main>
+
+  <footer class="mt-16 border-t">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-600 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span>© <span id="yr"></span> eppel construct</span>
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:underline">Privacy</a>
+        <a href="#" class="hover:underline">Terms</a>
+        <a href="#" class="hover:underline">Imprint</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const PAGES = [
+  { id: "home", label: "Home" },
+  { id: "services", label: "Services" },
+  { id: "projects", label: "Projects" },
+  { id: "process", label: "Process" },
+  { id: "about", label: "About" },
+  { id: "faq", label: "FAQ" },
+  { id: "contact", label: "Contact" },
+];
+
+function linkEl(p, isMobile=false) {
+  const a = document.createElement('a');
+  a.href = '#'+p.id;
+  a.className = (isMobile? 'px-3 py-2 rounded-2xl border text-center' : 'px-3 py-2 rounded-2xl border bg-white hover:bg-slate-50');
+  a.textContent = p.label;
+  return a;
+}
+
+function renderNav() {
+  const nd = document.getElementById('nav-desktop');
+  const nm = document.getElementById('nav-mobile');
+  nd.innerHTML = ''; nm.innerHTML = '';
+  PAGES.forEach(p => { nd.appendChild(linkEl(p)); nm.appendChild(linkEl(p,true)); });
+}
+
+function toggleMenu(){ document.getElementById('nav-mobile').classList.toggle('hidden'); }
+
+function hero() {
+  return `
+  <div class="relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20 grad"></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <span class="chip grad mb-4">Structural Engineering · Romania</span>
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+        Design for reinforced concrete & steel structures — precise drafting included
+      </h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-3xl">
+        Safe, efficient, code‑compliant designs for residential and commercial buildings across Romania.
+        BIM‑ready deliverables and shop drawings crews can build from.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#services" class="px-4 py-3 rounded-2xl text-white grad">See services</a>
+        <a href="#projects" class="px-4 py-3 rounded-2xl border">View projects</a>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
+        <span>✅ Eurocode & P100 compliance</span>
+        <span>✅ BIM‑ready (Revit)</span>
+        <span>✅ Fast, clear shop drawings</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function img(url, alt="") {
+  return `<div class="relative w-full overflow-hidden rounded-2xl border"><img src="${url}" alt="${alt}" class="w-full h-56 object-cover"/></div>`;
+}
+
+function home() {
+  return `
+  ${hero()}
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Expertise</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      ${['Reinforced concrete buildings','Steel & composite structures','Seismic assessment & retrofitting']
+        .map(t=>`
+          <div class="card p-6">
+            <h3 class="font-semibold mb-1">${t}</h3>
+            <p class="text-slate-600">Analysis, modeling, and detailing tailored to site constraints and budget.</p>
+          </div>`).join('')}
+    </div>
+  </section>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Recent work</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      ${img('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200&auto=format&fit=crop','Rebar on site')}
+      ${img('https://images.unsplash.com/photo-1498601761256-1efd98729b36?q=80&w=1200&auto=format&fit=crop','Steel frame')}
+      ${img('https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=1200&auto=format&fit=crop','Formwork and concrete')}
+    </div>
+  </section>`;
+}
+
+function services() {
+  const items = [
+    ['Concept & feasibility','Preliminary sizing, scheme comparison, early risk identification for permits and cost plans.'],
+    ['Detailed design (RC & steel)','3D analysis/modeling, design calculations, and drawings per Eurocode/P100.'],
+    ['Shop drawings & rebar schedules','Clear, buildable details with bar marks, bend schedules, and quantities.'],
+    ['Seismic evaluation & retrofit','Assessment of existing buildings, strengthening concepts, and phasing.'],
+  ];
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Structural services</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+      ${items.map(([h,p])=>`<div class="card p-6"><h3 class="font-semibold mb-1">${h}</h3><p class="text-slate-600">${p}</p></div>`).join('')}
+    </div>
+    <div>
+      <h3 class="font-semibold mb-2">Deliverables</h3>
+      <ul class="list-disc pl-6 text-slate-600 space-y-1">
+        <li>Calculation notes and design reports</li>
+        <li>GA plans, sections, and details</li>
+        <li>Rebar and steel fabrication drawings</li>
+        <li>BIM exports (IFC) and coordination models</li>
+      </ul>
+    </div>
+  </section>`;
+}
+
+function projects() {
+  const ps = [
+    ['Residential RC frame, Cluj','https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=1200&auto=format&fit=crop','G+8 building with shear walls; optimized slab thickness and rebar quantities.'],
+    ['Industrial steel hall, Brașov','https://images.unsplash.com/photo-1581091870633-1e7eab070b8b?q=80&w=1200&auto=format&fit=crop','30×60 m portal frame with crane runway; efficient connection detailing.'],
+    ['Seismic retrofit, București','https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop','FRP and RC jacketing with staged construction.']
+  ];
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Selected projects</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      ${ps.map(([t,imgUrl,d])=>`
+        <div class="card overflow-hidden">
+          ${img(imgUrl,t)}
+          <div class="p-6"><h3 class="font-semibold mb-1">${t}</h3><p class="text-slate-600">${d}</p></div>
+        </div>`).join('')}
+    </div>
+  </section>`;
+}
+
+function process() {
+  const steps = [
+    ['Brief & constraints','Requirements, codes, soils, and architectural constraints.'],
+    ['Model & iterate','3D analysis, options, and value engineering.'],
+    ['Detail & coordinate','Clash checks, buildability, and drawing production.'],
+    ['Support during construction','RFIs, site visits, and as‑built revisions.'],
+  ];
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">How we work</h2>
+    <ol class="grid md:grid-cols-4 gap-6 list-decimal pl-6 text-slate-600">
+      ${steps.map(([h,p])=>`<li><p class="font-semibold text-slate-900">${h}</p>${p}</li>`).join('')}
+    </ol>
+  </section>`;
+}
+
+function about() {
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">About eppel construct</h2>
+    <p class="text-slate-600 max-w-3xl">We’re a structural engineering studio focused on reliable, code‑compliant designs for buildings in Romania. We combine practical site experience with BIM workflows to deliver drawings that crews can actually build.</p>
+    <div class="flex flex-wrap gap-2 text-sm text-slate-600">
+      <span class="px-2 py-1 rounded-full border">Revit</span>
+      <span class="px-2 py-1 rounded-full border">ETABS</span>
+      <span class="px-2 py-1 rounded-full border">Robot</span>
+      <span class="px-2 py-1 rounded-full border">AutoCAD</span>
+      <span class="px-2 py-1 rounded-full border">Eurocode / P100</span>
+    </div>
+  </section>`;
+}
+
+function faq() {
+  const faqs = [
+    ['Do you work across Romania?','Yes—most projects are remote with periodic site visits.'],
+    ['Can you produce shop drawings?','Absolutely—rebar marks, bend schedules, and quantities are included.'],
+    ['Which codes do you follow?','Eurocodes and Romanian P100 for seismic, plus local norms as needed.']
+  ];
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Frequently asked questions</h2>
+    <div class="space-y-4">
+      ${faqs.map(([q,a])=>`
+        <details class="card p-4">
+          <summary class="font-semibold cursor-pointer">${q}</summary>
+          <p class="text-slate-600 mt-2">${a}</p>
+        </details>`).join('')}
+    </div>
+  </section>`;
+}
+
+function contact() {
+  return `
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Contact</h2>
+    <form class="card p-6 space-y-4 max-w-2xl" onsubmit="event.preventDefault(); alert('Demo form — connect a service like Formspree to activate.');">
+      <div class="grid md:grid-cols-2 gap-4">
+        <input class="border rounded-xl px-3 py-2" placeholder="Full name">
+        <input class="border rounded-xl px-3 py-2" type="email" placeholder="Email address">
+        <input class="border rounded-xl px-3 py-2" placeholder="Phone (optional)">
+        <input class="border rounded-xl px-3 py-2" placeholder="City">
+        <textarea class="border rounded-xl px-3 py-2 md:col-span-2" rows="5" placeholder="Tell us about your project (height, system, timelines)"></textarea>
+      </div>
+      <button class="px-4 py-3 rounded-2xl text-white grad w-full md:w-auto">Send message</button>
+      <p class="text-xs text-slate-600">Demo form—connect to your backend or a service like Formspree to make it live.</p>
+    </form>
+  </section>`;
+}
+
+function render(route) {
+  const app = document.getElementById('app');
+  const page = (route || 'home').replace('#','');
+  const content = {
+    home, services, projects, process, about, faq, contact
+  }[page];
+  app.innerHTML = content ? content() : home();
+}
+
+window.addEventListener('hashchange', ()=>render(location.hash));
+window.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  renderNav(); render(location.hash);
+});
+</script>
+</body>
+</html>
