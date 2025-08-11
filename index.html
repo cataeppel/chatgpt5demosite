@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>eppel construct — Structural design in Romania</title>
+  <title>eppel construct — Structural design</title>
   <meta name="description" content="Design for reinforced concrete and steel structures. Drafting and BIM-ready deliverables. Romania.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2216%22 fill=%22%23a855f7%22/><path d=%22M20 65L45 30l10 15 25-10-25 35-10-15-15 15z%22 fill=%22%23fff%22/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,6 +11,9 @@
     .grad { background-image: linear-gradient(90deg, #7c3aed, #d946ef); }
     .chip { @apply inline-flex items-center text-xs font-medium rounded-full px-2 py-1 text-white; }
     .card { @apply rounded-2xl border bg-white shadow-sm; }
+    .btn { @apply px-4 py-3 rounded-2xl; }
+    .btn-primary { @apply text-white; background-image: linear-gradient(90deg,#7c3aed,#d946ef); }
+    .btn-ghost { @apply border; }
   </style>
 </head>
 <body class="min-h-screen bg-white text-slate-900">
@@ -23,6 +26,9 @@
         <span class="ml-2 text-xs px-2 py-1 rounded-full border">RO</span>
       </div>
       <nav class="hidden md:flex items-center gap-2" id="nav-desktop"></nav>
+      <div class="hidden md:flex items-center gap-2">
+        <button id="langToggle" class="btn btn-ghost" aria-label="Toggle language">RO / EN</button>
+      </div>
       <button class="md:hidden p-2" onclick="toggleMenu()" aria-label="Menu">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -30,6 +36,7 @@
       </button>
     </div>
     <div id="nav-mobile" class="md:hidden hidden px-4 pb-4 grid grid-cols-2 gap-2"></div>
+    <div class="md:hidden px-4 pb-3"><button id="langToggleMobile" class="btn btn-ghost w-full">RO / EN</button></div>
   </header>
 
   <!-- Pages -->
@@ -47,21 +54,126 @@
   </footer>
 
 <script>
-const PAGES = [
-  { id: "home", label: "Home" },
-  { id: "services", label: "Services" },
-  { id: "projects", label: "Projects" },
-  { id: "process", label: "Process" },
-  { id: "about", label: "About" },
-  { id: "faq", label: "FAQ" },
-  { id: "contact", label: "Contact" },
-];
+const i18n = {
+  en: {
+    nav: {home:'Home', services:'Services', projects:'Projects', process:'Process', about:'About', faq:'FAQ', contact:'Contact'},
+    heroChip: 'Structural Engineering · Romania',
+    heroH1: 'Design for reinforced concrete & steel structures — precise drafting included',
+    heroP: 'Safe, efficient, code‑compliant designs for residential and commercial buildings across Romania. BIM‑ready deliverables and shop drawings crews can build from.',
+    ctaServices: 'See services',
+    ctaProjects: 'View projects',
+    bullets: ['Eurocode & P100 compliance','BIM‑ready (Revit)','Fast, clear shop drawings'],
+    expertise: 'Expertise',
+    expItems: ['Reinforced concrete buildings','Steel & composite structures','Seismic assessment & retrofitting'],
+    recentWork: 'Recent work',
+    servicesH: 'Structural services',
+    servicesItems: [
+      ['Concept & feasibility','Preliminary sizing, scheme comparison, early risk identification for permits and cost plans.'],
+      ['Detailed design (RC & steel)','3D analysis/modeling, design calculations, and drawings per Eurocode/P100.'],
+      ['Shop drawings & rebar schedules','Clear, buildable details with bar marks, bend schedules, and quantities.'],
+      ['Seismic evaluation & retrofit','Assessment of existing buildings, strengthening concepts, and phasing.'],
+    ],
+    deliverables: 'Deliverables',
+    deliverableItems: ['Calculation notes and design reports','GA plans, sections, and details','Rebar and steel fabrication drawings','BIM exports (IFC) and coordination models'],
+    selectedProjects: 'Selected projects',
+    projects: [
+      ['Residential RC frame, Cluj','G+8 building with shear walls; optimized slab thickness and rebar quantities.'],
+      ['Industrial steel hall, Brașov','30×60 m portal frame with crane runway; efficient connection detailing.'],
+      ['Seismic retrofit, București','FRP and RC jacketing with staged construction.'],
+    ],
+    processH: 'How we work',
+    processSteps: [
+      ['Brief & constraints','Requirements, codes, soils, and architectural constraints.'],
+      ['Model & iterate','3D analysis, options, and value engineering.'],
+      ['Detail & coordinate','Clash checks, buildability, and drawing production.'],
+      ['Support during construction','RFIs, site visits, and as‑built revisions.'],
+    ],
+    aboutH: 'About eppel construct',
+    aboutP: 'We’re a structural engineering studio focused on reliable, code‑compliant designs for buildings in Romania. We combine practical site experience with BIM workflows to deliver drawings that crews can actually build.',
+    tools: 'Tools & stack',
+    faqH: 'Frequently asked questions',
+    faqs: [
+      ['Do you work across Romania?','Yes—most projects are remote with periodic site visits.'],
+      ['Can you produce shop drawings?','Absolutely—rebar marks, bend schedules, and quantities are included.'],
+      ['Which codes do you follow?','Eurocodes and Romanian P100 for seismic, plus local norms as needed.'],
+    ],
+    contactH: 'Contact',
+    form: {name:'Full name', email:'Email address', phone:'Phone (optional)', city:'City', msg:'Tell us about your project (height, system, timelines)', send:'Send message', demo:'Demo form—connect to your backend or a service like Formspree to make it live.'},
+  },
+  ro: {
+    nav: {home:'Acasă', services:'Servicii', projects:'Proiecte', process:'Proces', about:'Despre', faq:'Întrebări', contact:'Contact'},
+    heroChip: 'Inginerie structurală · România',
+    heroH1: 'Proiectare pentru structuri din beton armat și oțel — cu detalii de execuție precise',
+    heroP: 'Proiecte sigure, eficiente și conforme cu normele pentru clădiri rezidențiale și comerciale din România. Livrabile compatibile BIM și planșe de detalii ușor de executat pe șantier.',
+    ctaServices: 'Vezi serviciile',
+    ctaProjects: 'Vezi proiectele',
+    bullets: ['Conform Eurocode & P100','Pregătit pentru BIM (Revit)','Planșe de detalii rapide și clare'],
+    expertise: 'Expertiză',
+    expItems: ['Clădiri din beton armat','Structuri metalice și compozite','Evaluare seismică și consolidare'],
+    recentWork: 'Lucrări recente',
+    servicesH: 'Servicii structurale',
+    servicesItems: [
+      ['Concept & fezabilitate','Dimensionări preliminare, comparare soluții și riscuri timpurii pentru avize și bugete.'],
+      ['Proiect tehnic (BA & oțel)','Analiză/modelare 3D, note de calcul și planșe conform Eurocode/P100.'],
+      ['Planșe de armare & liste bare','Detalii clare și executabile cu marcaje, schițe de îndoire și cantități.'],
+      ['Expertiză seismică & consolidare','Evaluarea clădirilor existente, soluții de întărire și etapizare.'],
+    ],
+    deliverables: 'Livrabile',
+    deliverableItems: ['Note de calcul și rapoarte','Planuri, secțiuni și detalii de ansamblu','Desene de armare și fabricație metal','Exporturi BIM (IFC) și modele de coordonare'],
+    selectedProjects: 'Proiecte selectate',
+    projects: [
+      ['Cadru BA rezidențial, Cluj','Clădire P+8 cu pereți structurali; optimizare grosimi plăci și cantități armare.'],
+      ['Hală industrială metalică, Brașov','Cadru portal 30×60 m cu pod rulant; detaliere eficientă a îmbinărilor.'],
+      ['Consolidare seismică, București','Cămășuiri cu BA și FRP, execuție etapizată.'],
+    ],
+    processH: 'Cum lucrăm',
+    processSteps: [
+      ['Temă & constrângeri','Cerințe, normative, studii geotehnice și constrângeri arhitecturale.'],
+      ['Modelare & iterare','Analiză 3D, opțiuni și value engineering.'],
+      ['Detaliere & coordonare','Verificări de ciocniri, executabilitate și producerea planșelor.'],
+      ['Asistență pe șantier','RFI-uri, vizite pe șantier și „as-built”.'],
+    ],
+    aboutH: 'Despre eppel construct',
+    aboutP: 'Suntem un studio de inginerie structurală axat pe proiecte fiabile și conforme pentru clădiri din România. Îmbinăm experiența de șantier cu fluxuri BIM pentru planșe pe care echipele chiar le pot executa.',
+    tools: 'Instrumente & platforme',
+    faqH: 'Întrebări frecvente',
+    faqs: [
+      ['Lucrați în toată țara?','Da — majoritatea proiectelor sunt la distanță, cu vizite periodice pe șantier.'],
+      ['Faceți și planșe de execuție?','Desigur — marcaje de bare, schițe de îndoire și cantități incluse.'],
+      ['După ce norme proiectați?','Eurocode și P100 pentru seismic, plus norme locale unde este cazul.'],
+    ],
+    contactH: 'Contact',
+    form: {name:'Nume complet', email:'Adresă email', phone:'Telefon (opțional)', city:'Oraș', msg:'Descrie proiectul (înălțime, sistem, termene)', send:'Trimite mesaj', demo:'Formular demo — conectați un serviciu precum Formspree pentru a-l activa.'},
+  }
+};
 
-function linkEl(p, isMobile=false) {
+const IMG = {
+  rebar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200&auto=format&fit=crop',
+  steel: 'https://images.unsplash.com/photo-1498601761256-1efd98729b36?q=80&w=1200&auto=format&fit=crop',
+  formwork: 'https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=1200&auto=format&fit=crop',
+  resCluj: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=1200&auto=format&fit=crop',
+  hallBrasov: 'https://images.unsplash.com/photo-1581091870633-1e7eab070b8b?q=80&w=1200&auto=format&fit=crop',
+  retrofitBuc: 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop'
+};
+
+const PAGES = ['home','services','projects','process','about','faq','contact'];
+let lang = localStorage.getItem('lang') || 'en';
+
+function t(path){ return path.split('.').reduce((o,k)=> o && o[k], i18n[lang]); }
+
+function setLang(l){
+  lang = l; localStorage.setItem('lang', l);
+  renderNav(); render(location.hash);
+  document.documentElement.lang = l === 'ro' ? 'ro' : 'en';
+  document.getElementById('langToggle').textContent = (l==='en'?'RO / EN':'EN / RO');
+  document.getElementById('langToggleMobile').textContent = (l==='en'?'RO / EN':'EN / RO');
+}
+
+function linkEl(id, isMobile=false) {
   const a = document.createElement('a');
-  a.href = '#'+p.id;
+  a.href = '#'+id;
   a.className = (isMobile? 'px-3 py-2 rounded-2xl border text-center' : 'px-3 py-2 rounded-2xl border bg-white hover:bg-slate-50');
-  a.textContent = p.label;
+  a.textContent = t('nav.'+id);
   return a;
 }
 
@@ -69,7 +181,7 @@ function renderNav() {
   const nd = document.getElementById('nav-desktop');
   const nm = document.getElementById('nav-mobile');
   nd.innerHTML = ''; nm.innerHTML = '';
-  PAGES.forEach(p => { nd.appendChild(linkEl(p)); nm.appendChild(linkEl(p,true)); });
+  PAGES.forEach(id => { nd.appendChild(linkEl(id)); nm.appendChild(linkEl(id,true)); });
 }
 
 function toggleMenu(){ document.getElementById('nav-mobile').classList.toggle('hidden'); }
@@ -79,111 +191,83 @@ function hero() {
   <div class="relative overflow-hidden">
     <div class="absolute inset-0 opacity-20 grad"></div>
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-      <span class="chip grad mb-4">Structural Engineering · Romania</span>
-      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
-        Design for reinforced concrete & steel structures — precise drafting included
-      </h1>
-      <p class="mt-4 text-lg text-slate-600 max-w-3xl">
-        Safe, efficient, code‑compliant designs for residential and commercial buildings across Romania.
-        BIM‑ready deliverables and shop drawings crews can build from.
-      </p>
+      <span class="chip grad mb-4">${t('heroChip')}</span>
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">${t('heroH1')}</h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-3xl">${t('heroP')}</p>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="#services" class="px-4 py-3 rounded-2xl text-white grad">See services</a>
-        <a href="#projects" class="px-4 py-3 rounded-2xl border">View projects</a>
+        <a href="#services" class="btn btn-primary">${t('ctaServices')}</a>
+        <a href="#projects" class="btn btn-ghost">${t('ctaProjects')}</a>
       </div>
       <div class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
-        <span>✅ Eurocode & P100 compliance</span>
-        <span>✅ BIM‑ready (Revit)</span>
-        <span>✅ Fast, clear shop drawings</span>
+        ${t('bullets').map(b=>`<span>✅ ${b}</span>`).join('')}
       </div>
     </div>
   </div>`;
 }
 
-function img(url, alt="") {
-  return `<div class="relative w-full overflow-hidden rounded-2xl border"><img src="${url}" alt="${alt}" class="w-full h-56 object-cover"/></div>`;
-}
+function img(url, alt="") { return `<div class="relative w-full overflow-hidden rounded-2xl border"><img src="${url}" alt="${alt}" class="w-full h-56 object-cover"/></div>`; }
 
 function home() {
   return `
   ${hero()}
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Expertise</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('expertise')}</h2>
     <div class="grid md:grid-cols-3 gap-6">
-      ${['Reinforced concrete buildings','Steel & composite structures','Seismic assessment & retrofitting']
-        .map(t=>`
+      ${t('expItems').map(txt=>`
           <div class="card p-6">
-            <h3 class="font-semibold mb-1">${t}</h3>
-            <p class="text-slate-600">Analysis, modeling, and detailing tailored to site constraints and budget.</p>
+            <h3 class="font-semibold mb-1">${txt}</h3>
+            <p class="text-slate-600">${lang==='en'?'Analysis, modeling, and detailing tailored to site constraints and budget.':'Analiză, modelare și detaliere adaptate constrângerilor de șantier și bugetului.'}</p>
           </div>`).join('')}
     </div>
   </section>
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Recent work</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('recentWork')}</h2>
     <div class="grid md:grid-cols-3 gap-6">
-      ${img('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200&auto=format&fit=crop','Rebar on site')}
-      ${img('https://images.unsplash.com/photo-1498601761256-1efd98729b36?q=80&w=1200&auto=format&fit=crop','Steel frame')}
-      ${img('https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=1200&auto=format&fit=crop','Formwork and concrete')}
+      ${img(IMG.rebar,'Rebar on site')}
+      ${img(IMG.steel,'Steel frame')}
+      ${img(IMG.formwork,'Formwork and concrete')}
     </div>
   </section>`;
 }
 
 function services() {
-  const items = [
-    ['Concept & feasibility','Preliminary sizing, scheme comparison, early risk identification for permits and cost plans.'],
-    ['Detailed design (RC & steel)','3D analysis/modeling, design calculations, and drawings per Eurocode/P100.'],
-    ['Shop drawings & rebar schedules','Clear, buildable details with bar marks, bend schedules, and quantities.'],
-    ['Seismic evaluation & retrofit','Assessment of existing buildings, strengthening concepts, and phasing.'],
-  ];
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Structural services</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('servicesH')}</h2>
     <div class="grid md:grid-cols-2 gap-6">
-      ${items.map(([h,p])=>`<div class="card p-6"><h3 class="font-semibold mb-1">${h}</h3><p class="text-slate-600">${p}</p></div>`).join('')}
+      ${t('servicesItems').map(([h,p])=>`<div class="card p-6"><h3 class="font-semibold mb-1">${h}</h3><p class="text-slate-600">${p}</p></div>`).join('')}
     </div>
     <div>
-      <h3 class="font-semibold mb-2">Deliverables</h3>
+      <h3 class="font-semibold mb-2">${t('deliverables')}</h3>
       <ul class="list-disc pl-6 text-slate-600 space-y-1">
-        <li>Calculation notes and design reports</li>
-        <li>GA plans, sections, and details</li>
-        <li>Rebar and steel fabrication drawings</li>
-        <li>BIM exports (IFC) and coordination models</li>
+        ${t('deliverableItems').map(li=>`<li>${li}</li>`).join('')}
       </ul>
     </div>
   </section>`;
 }
 
 function projects() {
-  const ps = [
-    ['Residential RC frame, Cluj','https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=1200&auto=format&fit=crop','G+8 building with shear walls; optimized slab thickness and rebar quantities.'],
-    ['Industrial steel hall, Brașov','https://images.unsplash.com/photo-1581091870633-1e7eab070b8b?q=80&w=1200&auto=format&fit=crop','30×60 m portal frame with crane runway; efficient connection detailing.'],
-    ['Seismic retrofit, București','https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop','FRP and RC jacketing with staged construction.']
-  ];
+  const data = t('projects');
+  const imgs = [IMG.resCluj, IMG.hallBrasov, IMG.retrofitBuc];
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Selected projects</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('selectedProjects')}</h2>
     <div class="grid md:grid-cols-3 gap-6">
-      ${ps.map(([t,imgUrl,d])=>`
+      ${data.map(([title,desc],i)=>`
         <div class="card overflow-hidden">
-          ${img(imgUrl,t)}
-          <div class="p-6"><h3 class="font-semibold mb-1">${t}</h3><p class="text-slate-600">${d}</p></div>
+          ${img(imgs[i], title)}
+          <div class="p-6"><h3 class="font-semibold mb-1">${title}</h3><p class="text-slate-600">${desc}</p></div>
         </div>`).join('')}
     </div>
   </section>`;
 }
 
 function process() {
-  const steps = [
-    ['Brief & constraints','Requirements, codes, soils, and architectural constraints.'],
-    ['Model & iterate','3D analysis, options, and value engineering.'],
-    ['Detail & coordinate','Clash checks, buildability, and drawing production.'],
-    ['Support during construction','RFIs, site visits, and as‑built revisions.'],
-  ];
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">How we work</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('processH')}</h2>
     <ol class="grid md:grid-cols-4 gap-6 list-decimal pl-6 text-slate-600">
-      ${steps.map(([h,p])=>`<li><p class="font-semibold text-slate-900">${h}</p>${p}</li>`).join('')}
+      ${t('processSteps').map(([h,p])=>`<li><p class="font-semibold text-slate-900">${h}</p>${p}</li>`).join('')}
     </ol>
   </section>`;
 }
@@ -191,9 +275,9 @@ function process() {
 function about() {
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">About eppel construct</h2>
-    <p class="text-slate-600 max-w-3xl">We’re a structural engineering studio focused on reliable, code‑compliant designs for buildings in Romania. We combine practical site experience with BIM workflows to deliver drawings that crews can actually build.</p>
-    <div class="flex flex-wrap gap-2 text-sm text-slate-600">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('aboutH')}</h2>
+    <p class="text-slate-600 max-w-3xl">${t('aboutP')}</p>
+    <div class="flex items-center gap-2 text-sm text-slate-600"><span class="font-semibold">${t('tools')}:</span>
       <span class="px-2 py-1 rounded-full border">Revit</span>
       <span class="px-2 py-1 rounded-full border">ETABS</span>
       <span class="px-2 py-1 rounded-full border">Robot</span>
@@ -204,16 +288,11 @@ function about() {
 }
 
 function faq() {
-  const faqs = [
-    ['Do you work across Romania?','Yes—most projects are remote with periodic site visits.'],
-    ['Can you produce shop drawings?','Absolutely—rebar marks, bend schedules, and quantities are included.'],
-    ['Which codes do you follow?','Eurocodes and Romanian P100 for seismic, plus local norms as needed.']
-  ];
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Frequently asked questions</h2>
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('faqH')}</h2>
     <div class="space-y-4">
-      ${faqs.map(([q,a])=>`
+      ${t('faqs').map(([q,a])=>`
         <details class="card p-4">
           <summary class="font-semibold cursor-pointer">${q}</summary>
           <p class="text-slate-600 mt-2">${a}</p>
@@ -223,36 +302,39 @@ function faq() {
 }
 
 function contact() {
+  const f = t('form');
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">Contact</h2>
-    <form class="card p-6 space-y-4 max-w-2xl" onsubmit="event.preventDefault(); alert('Demo form — connect a service like Formspree to activate.');">
+    <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('contactH')}</h2>
+    <form class="card p-6 space-y-4 max-w-2xl" onsubmit="event.preventDefault(); alert('${lang==='en'?'Demo form — connect a service like Formspree to activate.':'Formular demo — conectați un serviciu precum Formspree pentru a-l activa.'}');">
       <div class="grid md:grid-cols-2 gap-4">
-        <input class="border rounded-xl px-3 py-2" placeholder="Full name">
-        <input class="border rounded-xl px-3 py-2" type="email" placeholder="Email address">
-        <input class="border rounded-xl px-3 py-2" placeholder="Phone (optional)">
-        <input class="border rounded-xl px-3 py-2" placeholder="City">
-        <textarea class="border rounded-xl px-3 py-2 md:col-span-2" rows="5" placeholder="Tell us about your project (height, system, timelines)"></textarea>
+        <input class="border rounded-xl px-3 py-2" placeholder="${f.name}">
+        <input class="border rounded-xl px-3 py-2" type="email" placeholder="${f.email}">
+        <input class="border rounded-xl px-3 py-2" placeholder="${f.phone}">
+        <input class="border rounded-xl px-3 py-2" placeholder="${f.city}">
+        <textarea class="border rounded-xl px-3 py-2 md:col-span-2" rows="5" placeholder="${f.msg}"></textarea>
       </div>
-      <button class="px-4 py-3 rounded-2xl text-white grad w-full md:w-auto">Send message</button>
-      <p class="text-xs text-slate-600">Demo form—connect to your backend or a service like Formspree to make it live.</p>
+      <button class="btn btn-primary w-full md:w-auto">${f.send}</button>
+      <p class="text-xs text-slate-600">${f.demo}</p>
     </form>
   </section>`;
 }
 
+const views = {home, services, projects, process, about, faq, contact};
+
 function render(route) {
   const app = document.getElementById('app');
   const page = (route || 'home').replace('#','');
-  const content = {
-    home, services, projects, process, about, faq, contact
-  }[page];
-  app.innerHTML = content ? content() : home();
+  app.innerHTML = (views[page] || views.home)();
 }
 
 window.addEventListener('hashchange', ()=>render(location.hash));
 window.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('yr').textContent = new Date().getFullYear();
   renderNav(); render(location.hash);
+  setLang(lang);
+  document.getElementById('langToggle').addEventListener('click', ()=> setLang(lang==='en'?'ro':'en'));
+  document.getElementById('langToggleMobile').addEventListener('click', ()=> setLang(lang==='en'?'ro':'en'));
 });
 </script>
 </body>
