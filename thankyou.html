@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You - Eppel Construct</title>
+<meta http-equiv="refresh" content="5;url=index.html">
+<style>
+  :root {
+    --delay: 0.6s;   /* single timing point for all elements */
+    --dur: 0.9s;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drawCheck {
+    0%   { stroke-dashoffset: 50; opacity: 0; }
+    1%   { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, purple, magenta);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+  }
+  .wrap {
+    animation: fadeUp var(--dur) ease-out var(--delay) both;
+  }
+  svg {
+    width: 84px;
+    height: 84px;
+    margin-bottom: 1rem;
+    stroke: white;
+    stroke-width: 4;
+    fill: none;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: drawCheck var(--dur) ease-out var(--delay) forwards;
+  }
+  h1, p, a {
+    opacity: 0;
+    animation: fadeUp var(--dur) ease-out var(--delay) both;
+  }
+  h1 { font-size: 3em; margin-bottom: 0.5em; }
+  p  { font-size: 1.2em; margin-bottom: 1.25em; }
+  a  {
+    background-color: white;
+    color: purple;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    display: inline-block;
+  }
+  a:hover { background-color: magenta; color: white; }
+  .muted { opacity: .85; font-size: .95em; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 12l6 6L20 6"></path>
+    </svg>
+    <h1>Thank you!</h1>
+    <p>Your message has been sent successfully.<br>We will get back to you shortly.</p>
+    <p class="muted"><em>You will be redirected to the homepage in 5 seconds...</em></p>
+    <a href="index.html" aria-label="Back to Home">Back to Home</a>
+  </div>
+</body>
+</html>
