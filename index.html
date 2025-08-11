@@ -14,6 +14,8 @@
     .btn { @apply px-4 py-3 rounded-2xl; }
     .btn-primary { @apply text-white; background-image: linear-gradient(90deg,#7c3aed,#d946ef); }
     .btn-ghost { @apply border; }
+    .wa-btn { position: fixed; right: 16px; bottom: 16px; z-index: 60; }
+    .wa-ico { width: 56px; height: 56px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); }
   </style>
 </head>
 <body class="min-h-screen bg-white text-slate-900">
@@ -28,6 +30,7 @@
       <nav class="hidden md:flex items-center gap-2" id="nav-desktop"></nav>
       <div class="hidden md:flex items-center gap-2">
         <button id="langToggle" class="btn btn-ghost" aria-label="Toggle language">RO / EN</button>
+        <a href="#contact" class="btn btn-primary" aria-label="Request a quote">Request a quote</a>
       </div>
       <button class="md:hidden p-2" onclick="toggleMenu()" aria-label="Menu">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -36,7 +39,10 @@
       </button>
     </div>
     <div id="nav-mobile" class="md:hidden hidden px-4 pb-4 grid grid-cols-2 gap-2"></div>
-    <div class="md:hidden px-4 pb-3"><button id="langToggleMobile" class="btn btn-ghost w-full">RO / EN</button></div>
+    <div class="md:hidden px-4 pb-3 flex gap-2">
+      <button id="langToggleMobile" class="btn btn-ghost w-full">RO / EN</button>
+      <a href="#contact" class="btn btn-primary w-full" aria-label="Request a quote">Request a quote</a>
+    </div>
   </header>
 
   <!-- Pages -->
@@ -53,7 +59,17 @@
     </div>
   </footer>
 
+  <!-- Floating WhatsApp button -->
+  <div class="wa-btn">
+    <a class="wa-ico grad" href="https://wa.me/40723234792?text=Salut%20eppel%20construct%2C%20a%C8%99%20dori%20o%20ofert%C4%83%20de%20proiectare" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg viewBox="0 0 32 32" fill="white" width="26" height="26" aria-hidden="true">
+        <path d="M19.11 17.17c-.27-.14-1.6-.79-1.84-.87-.25-.09-.43-.14-.6.14-.18.27-.69.86-.85 1.03-.16.18-.31.2-.58.07-.27-.14-1.14-.42-2.17-1.34-.8-.71-1.34-1.58-1.5-1.85-.16-.27-.02-.41.12-.54.12-.12.27-.31.4-.47.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.47-.07-.14-.6-1.43-.82-1.96-.22-.53-.44-.46-.6-.46-.16 0-.34-.02-.52-.02-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.27s.98 2.63 1.12 2.81c.14.18 1.92 2.93 4.65 4.1.65.28 1.16.45 1.55.58.65.21 1.25.18 1.72.11.53-.08 1.6-.65 1.83-1.28.23-.63.23-1.16.16-1.28-.07-.11-.25-.18-.52-.31z"/><path d="M26.07 5.93C23.34 3.2 19.8 1.73 16 1.73 8.63 1.73 2.73 7.63 2.73 15c0 2.34.61 4.61 1.77 6.61L2 30l8.6-2.25c1.94 1.06 4.14 1.62 6.4 1.62 7.37 0 13.27-5.9 13.27-13.27 0-3.54-1.38-6.87-3.9-9.4zm-10.07 22.9c-2.02 0-3.99-.55-5.71-1.59l-.41-.24-5.1 1.33 1.36-4.98-.26-.43c-1.09-1.83-1.66-3.92-1.66-6.06 0-6.51 5.29-11.8 11.8-11.8 3.15 0 6.11 1.23 8.34 3.46 2.22 2.22 3.46 5.18 3.46 8.33 0 6.51-5.29 11.8-11.8 11.8z"/>
+      </svg>
+    </a>
+  </div>
+
 <script>
+// ---------------------- Translations ----------------------
 const i18n = {
   en: {
     nav: {home:'Home', services:'Services', projects:'Projects', process:'Process', about:'About', faq:'FAQ', contact:'Contact'},
@@ -66,6 +82,7 @@ const i18n = {
     expertise: 'Expertise',
     expItems: ['Reinforced concrete buildings','Steel & composite structures','Seismic assessment & retrofitting'],
     recentWork: 'Recent work',
+
     servicesH: 'Structural services',
     servicesItems: [
       ['Concept & feasibility','Preliminary sizing, scheme comparison, early risk identification for permits and cost plans.'],
@@ -75,12 +92,14 @@ const i18n = {
     ],
     deliverables: 'Deliverables',
     deliverableItems: ['Calculation notes and design reports','GA plans, sections, and details','Rebar and steel fabrication drawings','BIM exports (IFC) and coordination models'],
+
     selectedProjects: 'Selected projects',
     projects: [
       ['Residential RC frame, Cluj','G+8 building with shear walls; optimized slab thickness and rebar quantities.'],
       ['Industrial steel hall, Brașov','30×60 m portal frame with crane runway; efficient connection detailing.'],
       ['Seismic retrofit, București','FRP and RC jacketing with staged construction.'],
     ],
+
     processH: 'How we work',
     processSteps: [
       ['Brief & constraints','Requirements, codes, soils, and architectural constraints.'],
@@ -88,18 +107,23 @@ const i18n = {
       ['Detail & coordinate','Clash checks, buildability, and drawing production.'],
       ['Support during construction','RFIs, site visits, and as‑built revisions.'],
     ],
+
     aboutH: 'About eppel construct',
     aboutP: 'We’re a structural engineering studio focused on reliable, code‑compliant designs for buildings in Romania. We combine practical site experience with BIM workflows to deliver drawings that crews can actually build.',
     tools: 'Tools & stack',
+
     faqH: 'Frequently asked questions',
     faqs: [
       ['Do you work across Romania?','Yes—most projects are remote with periodic site visits.'],
       ['Can you produce shop drawings?','Absolutely—rebar marks, bend schedules, and quantities are included.'],
       ['Which codes do you follow?','Eurocodes and Romanian P100 for seismic, plus local norms as needed.'],
     ],
+
     contactH: 'Contact',
-    form: {name:'Full name', email:'Email address', phone:'Phone (optional)', city:'City', msg:'Tell us about your project (height, system, timelines)', send:'Send message', demo:'Demo form—connect to your backend or a service like Formspree to make it live.'},
+    form: {name:'Full name', email:'Email address', phone:'Phone (optional)', city:'City', msg:'Tell us about your project (height, system, timelines)', send:'Send message', demo:'Demo form—connect a Formspree endpoint to make it live.'},
+    formNote: '❗ Replace FORM_ID in index.html after you create a Formspree form.'
   },
+
   ro: {
     nav: {home:'Acasă', services:'Servicii', projects:'Proiecte', process:'Proces', about:'Despre', faq:'Întrebări', contact:'Contact'},
     heroChip: 'Inginerie structurală · România',
@@ -111,6 +135,7 @@ const i18n = {
     expertise: 'Expertiză',
     expItems: ['Clădiri din beton armat','Structuri metalice și compozite','Evaluare seismică și consolidare'],
     recentWork: 'Lucrări recente',
+
     servicesH: 'Servicii structurale',
     servicesItems: [
       ['Concept & fezabilitate','Dimensionări preliminare, comparare soluții și riscuri timpurii pentru avize și bugete.'],
@@ -120,12 +145,14 @@ const i18n = {
     ],
     deliverables: 'Livrabile',
     deliverableItems: ['Note de calcul și rapoarte','Planuri, secțiuni și detalii de ansamblu','Desene de armare și fabricație metal','Exporturi BIM (IFC) și modele de coordonare'],
+
     selectedProjects: 'Proiecte selectate',
     projects: [
       ['Cadru BA rezidențial, Cluj','Clădire P+8 cu pereți structurali; optimizare grosimi plăci și cantități armare.'],
       ['Hală industrială metalică, Brașov','Cadru portal 30×60 m cu pod rulant; detaliere eficientă a îmbinărilor.'],
       ['Consolidare seismică, București','Cămășuiri cu BA și FRP, execuție etapizată.'],
     ],
+
     processH: 'Cum lucrăm',
     processSteps: [
       ['Temă & constrângeri','Cerințe, normative, studii geotehnice și constrângeri arhitecturale.'],
@@ -133,17 +160,21 @@ const i18n = {
       ['Detaliere & coordonare','Verificări de ciocniri, executabilitate și producerea planșelor.'],
       ['Asistență pe șantier','RFI-uri, vizite pe șantier și „as-built”.'],
     ],
+
     aboutH: 'Despre eppel construct',
     aboutP: 'Suntem un studio de inginerie structurală axat pe proiecte fiabile și conforme pentru clădiri din România. Îmbinăm experiența de șantier cu fluxuri BIM pentru planșe pe care echipele chiar le pot executa.',
     tools: 'Instrumente & platforme',
+
     faqH: 'Întrebări frecvente',
     faqs: [
       ['Lucrați în toată țara?','Da — majoritatea proiectelor sunt la distanță, cu vizite periodice pe șantier.'],
       ['Faceți și planșe de execuție?','Desigur — marcaje de bare, schițe de îndoire și cantități incluse.'],
       ['După ce norme proiectați?','Eurocode și P100 pentru seismic, plus norme locale unde este cazul.'],
     ],
+
     contactH: 'Contact',
-    form: {name:'Nume complet', email:'Adresă email', phone:'Telefon (opțional)', city:'Oraș', msg:'Descrie proiectul (înălțime, sistem, termene)', send:'Trimite mesaj', demo:'Formular demo — conectați un serviciu precum Formspree pentru a-l activa.'},
+    form: {name:'Nume complet', email:'Adresă email', phone:'Telefon (opțional)', city:'Oraș', msg:'Descrie proiectul (înălțime, sistem, termene)', send:'Trimite mesaj', demo:'Formular demo — conectați un endpoint Formspree pentru a-l activa.'},
+    formNote: '❗ Înlocuiește FORM_ID din index.html după ce creezi formularul Formspree.'
   }
 };
 
@@ -303,20 +334,27 @@ function faq() {
 
 function contact() {
   const f = t('form');
+  // IMPORTANT: Replace FORM_ID below with your real Formspree form ID after creating one.
   return `
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">${t('contactH')}</h2>
-    <form class="card p-6 space-y-4 max-w-2xl" onsubmit="event.preventDefault(); alert('${lang==='en'?'Demo form — connect a service like Formspree to activate.':'Formular demo — conectați un serviciu precum Formspree pentru a-l activa.'}');">
+    <div class="text-xs text-slate-500">${t('formNote')}</div>
+    <form class="card p-6 space-y-4 max-w-2xl" action="https://formspree.io/f/FORM_ID" method="POST">
       <div class="grid md:grid-cols-2 gap-4">
-        <input class="border rounded-xl px-3 py-2" placeholder="${f.name}">
-        <input class="border rounded-xl px-3 py-2" type="email" placeholder="${f.email}">
-        <input class="border rounded-xl px-3 py-2" placeholder="${f.phone}">
-        <input class="border rounded-xl px-3 py-2" placeholder="${f.city}">
-        <textarea class="border rounded-xl px-3 py-2 md:col-span-2" rows="5" placeholder="${f.msg}"></textarea>
+        <input class="border rounded-xl px-3 py-2" name="name" placeholder="${f.name}" required>
+        <input class="border rounded-xl px-3 py-2" type="email" name="email" placeholder="${f.email}" required>
+        <input class="border rounded-xl px-3 py-2" name="phone" placeholder="${f.phone}">
+        <input class="border rounded-xl px-3 py-2" name="city" placeholder="${f.city}">
+        <textarea class="border rounded-xl px-3 py-2 md:col-span-2" rows="5" name="message" placeholder="${f.msg}" required></textarea>
       </div>
-      <button class="btn btn-primary w-full md:w-auto">${f.send}</button>
+      <input type="hidden" name="_subject" value="New inquiry from eppel construct site">
+      <input type="hidden" name="_language" value="${lang}">
+      <button class="btn btn-primary w-full md:w-auto" type="submit">${f.send}</button>
       <p class="text-xs text-slate-600">${f.demo}</p>
     </form>
+    <div class="text-sm text-slate-600">
+      Prefer WhatsApp? <a class="underline" target="_blank" rel="noopener" href="https://wa.me/40723234792?text=Salut%20eppel%20construct%2C%20a%C8%99%20dori%20o%20ofert%C4%83%20de%20proiectare">Chat on WhatsApp (+40723234792)</a>
+    </div>
   </section>`;
 }
 
